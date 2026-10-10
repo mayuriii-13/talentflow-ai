@@ -1,124 +1,168 @@
-# TalentFlow AI — Recruitment & Talent Management Platform
+# 🚀 TalentFlow AI — Recruitment & Talent Management Platform
 
-TalentFlow AI is a cloud-focused recruitment application demo developed as part of a Week 11 DevOps project at Davine Technology. It provides a candidate application form and stores submitted applications in an SQLite database.
+A cloud-hosted recruitment application demo built with **Python, SQLite, Docker, and AWS**. TalentFlow AI allows candidates to submit their applications through a simple web form, with application details stored in a SQLite database.
 
-The project is being developed incrementally to explore containerization, cloud deployment, and DevOps practices using AWS.
+## ✨ Features
 
-## Current Features
+- 📝 **Candidate Application Form** — Collects candidate name, email, job title, and skills.
+- ⚙️ **Python Backend** — Handles HTTP requests and processes application submissions.
+- 🗄️ **SQLite Database** — Stores submitted candidate applications.
+- 🐳 **Docker Containerization** — Packages the application into a Docker image.
+- ☁️ **AWS EC2 Deployment** — Runs the container on an Amazon Linux EC2 instance.
+- 🔄 **CI/CD Automation** — Uses GitHub Actions to build and push Docker images to Docker Hub.
+- 🔐 **Secure Remote Access** — Uses AWS Systems Manager Session Manager and port forwarding without opening a public inbound application port.
 
-- Candidate application form
-- Input validation for required fields
-- Python HTTP server
-- SQLite database for storing applications
-- JSON-based application submission endpoint
-- Dockerfile for container image creation
-- AWS EC2 deployment with access through AWS Systems Manager Session Manager
-- Private Amazon S3 storage for the application source file
+## 🛠️ Tech Stack
 
-## Technology Stack
+| Category | Technologies |
+|---|---|
+| Backend | Python |
+| Frontend | HTML, CSS, JavaScript |
+| Database | SQLite |
+| Containerization | Docker |
+| Cloud Platform | AWS EC2 |
+| CI/CD | GitHub Actions |
+| Container Registry | Docker Hub |
+| Remote Access | AWS Systems Manager (SSM) |
+| Version Control | Git & GitHub |
 
-- **Language:** Python
-- **Frontend:** HTML, CSS, JavaScript
-- **Backend:** Python HTTP server
-- **Database:** SQLite
-- **Cloud:** Amazon Web Services (AWS)
-- **Compute:** Amazon EC2
-- **Storage:** Amazon S3
-- **Secure administration:** AWS Systems Manager Session Manager
-- **Containerization:** Docker
-- **Image registry:** Docker Hub
-- **Source control and CI/CD:** GitHub and GitHub Actions (planned)
-
-## Project Structure
+## 🏗️ Architecture
 
 ```text
-talentflow-ai/
-├── app.py
-├── Dockerfile
-├── README.md
-└── .github/
-    └── workflows/
-        └── docker-build.yml
+👤 Candidate
+     |
+     v
+🌐 Web Browser
+     |
+     v
+📝 Candidate Application Form
+     |
+     v
+⚙️ Python HTTP Server
+     |
+     v
+🗄️ SQLite Database
+     |
+     v
+✅ Application Saved
 ```
 
-The GitHub Actions workflow will be added when the cloud build pipeline is configured.
+### ☁️ Deployment Workflow
 
-## Run Locally
+```text
+💻 Source Code (GitHub)
+         |
+         v
+🔄 GitHub Actions
+         |
+         v
+🐳 Docker Build
+         |
+         v
+📦 Docker Hub
+         |
+         v
+☁️ AWS EC2
+         |
+         v
+🚀 Running Application Container
+```
 
-**Requirements:** Python 3.9 or later.
+## 🚀 Deployment Steps
 
-1. Clone the repository:
+### 1. Clone the Repository
 
-   ```bash
-   git clone YOUR_GITHUB_REPOSITORY_URL
-   cd talentflow-ai
-   ```
+```bash
+git clone https://github.com/mayuriii-13/talentflow-ai.git
+cd talentflow-ai
+```
 
-2. Start the application:
+### 2. Build the Docker Image
 
-   ```bash
-   python app.py
-   ```
+Run this command from the directory containing the `Dockerfile` and `app.py`:
 
-3. Open your browser at:
+```bash
+docker build -t talentflow-ai .
+```
 
-   http://127.0.0.1:8000
+### 3. Run the Container
 
-4. Enter fictional candidate information and submit the form.
+```bash
+docker run -d \
+  --name talentflow-ai \
+  -p 127.0.0.1:8000:8000 \
+  talentflow-ai
+```
 
-The application creates `talentflow.db` in the same directory as `app.py` when it starts.
+### 4. Open the Application
 
-## Docker
+Visit the following address on the same computer running Docker:
 
-The project includes a Dockerfile for packaging the application.
+```text
+http://127.0.0.1:8000
+```
 
-The intended workflow is:
+> 💡 The local Docker commands above are for local testing. The AWS deployment uses Docker on EC2 and AWS Systems Manager port forwarding for private access.
 
-1. Build the Docker image using a cloud build environment.
-2. Publish the image to a private Docker Hub repository.
-3. Deploy the container to a suitable runtime environment.
-4. Configure persistent storage for application records.
+## 🧪 Testing
 
-Docker image publishing and container deployment are still in progress.
+The following functionality has been tested in the AWS environment:
 
-## AWS Deployment Status
+- ✅ Application page returns an HTTP `200 OK` response.
+- ✅ Candidate details can be submitted through the web form.
+- ✅ The backend validates required fields.
+- ✅ Application records are stored in SQLite.
+- ✅ The application runs inside a Docker container on AWS EC2.
+- ✅ GitHub Actions successfully builds and pushes the Docker image.
+- ✅ AWS Systems Manager port forwarding provides browser access without exposing port 8000 publicly.
 
-The initial application demo has been tested on an Amazon EC2 instance in the Mumbai region (`ap-south-1`). The application was accessed using AWS Systems Manager Session Manager port forwarding, and a test application was successfully saved to SQLite.
+## 🔐 Security Considerations
 
-The following components from the proposed architecture are planned or under development, not yet confirmed as implemented:
+- 🔒 The EC2 security group does not require a public inbound rule for application port 8000.
+- 🔑 AWS Systems Manager is used for remote access.
+- 🛡️ AWS credentials and Docker Hub access tokens should be stored securely, never committed to GitHub.
+- 🧪 Use fictional candidate information for testing this demo.
 
-- Automated Docker image build and publishing
-- Managed database using Amazon RDS
-- Application Load Balancer and HTTPS
-- Auto Scaling
-- AI-based candidate ranking and resume analysis
-- Production authentication and authorization
-- Centralized monitoring and alerting
+## 📌 Current Project Status
 
-## Security Notes
+**Status: Working cloud deployment demo**
 
-- Do not commit AWS credentials, private keys, passwords, or candidate databases.
-- Keep the Docker Hub repository private while the image is under development.
-- Use fictional candidate data for testing.
-- Do not expose the current demo publicly without adding authentication, appropriate input protections, and secure deployment configuration.
-- Configure persistent storage before relying on container-based database records.
+Implemented:
+- Candidate application form
+- Python HTTP backend
+- SQLite application storage
+- Docker container deployment on AWS EC2
+- GitHub Actions Docker build-and-push workflow
+- Private access through AWS Systems Manager port forwarding
 
-## Learning Objectives
+Planned improvements:
+- 🤖 AI-powered candidate matching and ranking
+- 🗄️ Managed database integration, such as Amazon RDS
+- 🔐 HTTPS and production-grade security
+- 📈 Monitoring, logging, and improved error handling
+- ☁️ Further deployment automation and scalability
 
-- Understand cloud-based application deployment
-- Practice AWS EC2 and S3
-- Learn Docker image creation and container deployment
-- Explore CI/CD automation using GitHub Actions
-- Understand database persistence and cloud security fundamentals
+*Note: AI-based candidate ranking, managed database integration, and production-grade scalability are planned features, not currently implemented.*
 
-## Project Status
+## 🎯 Learning Objectives
 
-**Status:** Working application demo; container build and automated deployment in progress.
+This project demonstrates practical learning in:
 
-This is an educational project and is not yet a production-ready recruitment platform.
+- AWS cloud infrastructure
+- Linux and Docker container management
+- Python web application development
+- CI/CD with GitHub Actions
+- Docker image publishing
+- AWS Systems Manager remote access
+- Database integration and application testing
 
-## Author
+## 👩‍💻 Author
 
-Mayuri Ambare
+**Mayuri Ambare**
 
-Cloud & DevOps Engineering — AWS
+- GitHub: [@mayuriii-13](https://github.com/mayuriii-13)
+- Project Repository: [TalentFlow AI](https://github.com/mayuriii-13/talentflow-ai)
+
+---
+
+⭐ If you find this project useful, feel free to explore the repository!

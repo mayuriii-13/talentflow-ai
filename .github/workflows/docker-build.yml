@@ -1,7 +1,7 @@
 ```yaml
 name: Build and Push TalentFlow AI Image
 
-on:
+'on':
   push:
     branches:
       - main
@@ -31,9 +31,6 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          push: true
-          tags: ${{ secrets.DOCKERHUB_USERNAME }}/talentflow-ai:latest
-```
           push: true
           tags: ${{ secrets.DOCKERHUB_USERNAME }}/talentflow-ai:latest
 ```

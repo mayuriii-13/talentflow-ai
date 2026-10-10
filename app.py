@@ -195,13 +195,15 @@ class Handler(BaseHTTPRequestHandler):
         print("%s - %s" % (self.address_string(), format % args))
 
 
+
 if __name__ == "__main__":
-    initialize_database()
-    HTTPServer(("0.0.0.0", 8000), Handler)
-    print("TalentFlow AI running at http://127.0.0.1:8000")
-    print(f"SQLite database: {DB_PATH}")
+    server = HTTPServer(("0.0.0.0", 8000), Handler)
+    print("TalentFlow AI running on port 8000")
+    print("SQLite database: /app/talentflow.db")
+
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        print("\nServer stopped.")
+        print("Server stopped.")
         server.server_close()
+

@@ -1,168 +1,225 @@
 # 🚀 TalentFlow AI — Recruitment & Talent Management Platform
 
-A cloud-hosted recruitment application demo built with **Python, SQLite, Docker, and AWS**. TalentFlow AI allows candidates to submit their applications through a simple web form, with application details stored in a SQLite database.
+A recruitment management demo built with **Python, SQLite, HTML, CSS, and JavaScript**. TalentFlow AI provides a local web interface for managing candidate applications and job postings, with skill-based matching to compare candidate skills against job requirements.
+
+This repository contains my own implementation and modifications, along with selected starting materials adapted from Davine Technologies project materials provided during my internship.
 
 ## ✨ Features
 
-- 📝 **Candidate Application Form** — Collects candidate name, email, job title, and skills.
-- ⚙️ **Python Backend** — Handles HTTP requests and processes application submissions.
-- 🗄️ **SQLite Database** — Stores submitted candidate applications.
-- 🐳 **Docker Containerization** — Packages the application into a Docker image.
-- ☁️ **AWS EC2 Deployment** — Runs the container on an Amazon Linux EC2 instance.
-- 🔄 **CI/CD Automation** — Uses GitHub Actions to build and push Docker images to Docker Hub.
-- 🔐 **Secure Remote Access** — Uses AWS Systems Manager Session Manager and port forwarding without opening a public inbound application port.
+- 📊 **Dashboard** — View summary counts and recent application activity.
+- 📝 **Candidate Management** — Save candidate details, including name, email, applied-for role, and skills.
+- 🔍 **Application Management** — View, search, and filter saved applications.
+- 💼 **Job Management** — Create, view, edit, and delete job postings with required skills.
+- 🤖 **Skill-Based Candidate Matching** — Compare candidate skills against a selected job's requirements.
+- 📈 **Match Explanation** — Display matched skills, missing skills, and the calculated match percentage.
+- 🗄️ **SQLite Database** — Store candidate applications and job records locally.
+- 🐳 **Docker Support** — Optional container testing, subject to verification of the Docker configuration.
 
 ## 🛠️ Tech Stack
 
 | Category | Technologies |
 |---|---|
-| Backend | Python |
+| Backend | Python 3 |
 | Frontend | HTML, CSS, JavaScript |
 | Database | SQLite |
-| Containerization | Docker |
-| Cloud Platform | AWS EC2 |
-| CI/CD | GitHub Actions |
-| Container Registry | Docker Hub |
-| Remote Access | AWS Systems Manager (SSM) |
+| Matching Logic | Rule-based skill matching |
+| Containerization | Docker (optional) |
 | Version Control | Git & GitHub |
 
 ## 🏗️ Architecture
 
 ```text
-👤 Candidate
-     |
-     v
+👤 Candidate / Recruiter
+          |
+          v
 🌐 Web Browser
-     |
-     v
-📝 Candidate Application Form
-     |
-     v
+          |
+          v
+🖥️ TalentFlow AI Web Interface
+          |
+          v
 ⚙️ Python HTTP Server
-     |
-     v
-🗄️ SQLite Database
-     |
-     v
-✅ Application Saved
+          |
+          +--------------------+
+          |                    |
+          v                    v
+📝 Candidate Applications   💼 Job Postings
+          |                    |
+          +---------+----------+
+                    |
+                    v
+             🗄️ SQLite Database
+                    |
+                    v
+          🤖 Skill Matching Logic
+                    |
+                    v
+       📈 Matched Skills & Missing Skills
+                    |
+                    v
+             📊 Match Percentage
 ```
 
-### ☁️ Deployment Workflow
+*This diagram represents the application's logical workflow; it does not imply that every component is deployed on AWS.*
 
-```text
-💻 Source Code (GitHub)
-         |
-         v
-🔄 GitHub Actions
-         |
-         v
-🐳 Docker Build
-         |
-         v
-📦 Docker Hub
-         |
-         v
-☁️ AWS EC2
-         |
-         v
-🚀 Running Application Container
-```
+## 🤖 How Candidate Matching Works
 
-## 🚀 Deployment Steps
+The current matching feature uses **rule-based skill matching**. It is not a trained machine-learning model or a generative-AI candidate-ranking system.
 
-### 1. Clone the Repository
+The matching process:
+
+1. 📋 Reads the required skills for a selected job.
+2. 🔎 Compares them with the candidate's saved skills.
+3. ✅ Identifies matched skills.
+4. ❌ Identifies missing skills.
+5. 📊 Calculates a match percentage.
+
+**Formula:**
+
+`Match Score = (Matched Required Skills / Total Required Skills) × 100`
+
+**Example:**
+
+Suppose a Cloud Engineer job requires AWS, Linux, and Networking. A candidate has AWS and Linux skills.
+
+- 📌 Total required skills: 3
+- ✅ Matched skills: 2
+- ❌ Missing skills: Networking
+- 📈 Match score: 2 / 3 × 100 = **67%**
+
+The score represents skill overlap only. It does not independently measure experience, proficiency, or overall candidate suitability.
+
+## 💻 How to Run the Project Locally
+
+### 📋 Prerequisites
+
+- Python 3
+- A web browser
+- Git (optional)
+
+### 🚀 Steps
+
+**1. Clone the repository**
 
 ```bash
 git clone https://github.com/mayuriii-13/talentflow-ai.git
 cd talentflow-ai
 ```
 
-### 2. Build the Docker Image
+**2. Start the application**
 
-Run this command from the directory containing the `Dockerfile` and `app.py`:
-
-```bash
-docker build -t talentflow-ai .
-```
-
-### 3. Run the Container
+From the repository root, run:
 
 ```bash
-docker run -d \
-  --name talentflow-ai \
-  -p 127.0.0.1:8000:8000 \
-  talentflow-ai
+python app/app.py
 ```
 
-### 4. Open the Application
+**3. Open the application**
 
-Visit the following address on the same computer running Docker:
+Visit:
 
 ```text
 http://127.0.0.1:8000
 ```
 
-> 💡 The local Docker commands above are for local testing. The AWS deployment uses Docker on EC2 and AWS Systems Manager port forwarding for private access.
+Keep the terminal open while using the application.
 
-## 🧪 Testing
+> 💡 Verify the application path and startup command against the files in your repository. The application uses a local SQLite database; use fictional candidate information for testing.
 
-The following functionality has been tested in the AWS environment:
+## 🐳 Docker (Optional)
 
-- ✅ Application page returns an HTTP `200 OK` response.
-- ✅ Candidate details can be submitted through the web form.
-- ✅ The backend validates required fields.
-- ✅ Application records are stored in SQLite.
-- ✅ The application runs inside a Docker container on AWS EC2.
-- ✅ GitHub Actions successfully builds and pushes the Docker image.
-- ✅ AWS Systems Manager port forwarding provides browser access without exposing port 8000 publicly.
+If your repository contains a working Dockerfile in the current directory, build the image with:
 
-## 🔐 Security Considerations
+```bash
+docker build -t talentflow-ai .
+```
 
-- 🔒 The EC2 security group does not require a public inbound rule for application port 8000.
-- 🔑 AWS Systems Manager is used for remote access.
-- 🛡️ AWS credentials and Docker Hub access tokens should be stored securely, never committed to GitHub.
-- 🧪 Use fictional candidate information for testing this demo.
+Run the container:
+
+```bash
+docker run --rm -p 8000:8000 talentflow-ai
+```
+
+Then visit:
+
+```text
+http://127.0.0.1:8000
+```
+
+> ⚠️ Confirm the Dockerfile location, application startup command, and database path before using these commands. Database persistence must be configured separately if records need to survive container removal.
+
+## 🧪 Testing Checklist
+
+- ✅ Start the application and open the local URL.
+- ✅ Add a fictional candidate and verify the saved record.
+- ✅ Create a job posting with required skills.
+- ✅ Edit and delete a test job posting.
+- ✅ Run candidate matching and review matched and missing skills.
+- ✅ Verify the calculated match percentage.
+- ✅ Restart the application and check whether records persist in SQLite.
+- 🐳 If using Docker, test the image build, application access, and database persistence separately.
+
+*Mark each item complete only after verifying it against the current version of your repository.*
 
 ## 📌 Current Project Status
 
-**Status: Working cloud deployment demo**
+**Status: Recruitment management demo with skill-based matching**
 
-Implemented:
-- Candidate application form
-- Python HTTP backend
-- SQLite application storage
-- Docker container deployment on AWS EC2
-- GitHub Actions Docker build-and-push workflow
-- Private access through AWS Systems Manager port forwarding
+### ✅ Implemented in the modified local version
 
-Planned improvements:
-- 🤖 AI-powered candidate matching and ranking
-- 🗄️ Managed database integration, such as Amazon RDS
-- 🔐 HTTPS and production-grade security
-- 📈 Monitoring, logging, and improved error handling
-- ☁️ Further deployment automation and scalability
+- Candidate and application management workflows.
+- Job posting management.
+- SQLite-based local data storage.
+- Rule-based skill comparison.
+- Matched skills, missing skills, and explainable match percentage.
 
-*Note: AI-based candidate ranking, managed database integration, and production-grade scalability are planned features, not currently implemented.*
+### 🚧 Planned Improvements
+
+- 🤖 More advanced AI-assisted candidate matching and ranking.
+- ☁️ Verified AWS deployment and deployment automation.
+- 🗄️ Managed database integration, such as Amazon RDS.
+- 🔐 Authentication, access control, and HTTPS.
+- 📈 Improved monitoring, logging, and error handling.
+- 📦 Verified CI/CD integration and container registry workflow.
+- 📊 Further scalability and production-readiness improvements.
+
+*Note: Planned improvements are not claimed as completed features. AWS EC2 deployment, GitHub Actions, Docker Hub publishing, and AWS Systems Manager access should be listed as completed only if you have verified those workflows in the current repository and environment.*
+
+## 🔐 Security Considerations
+
+- 🔒 Do not expose application ports publicly unless required and properly secured.
+- 🔑 Never commit AWS credentials, access keys, or Docker Hub tokens to GitHub.
+- 🛡️ Configure appropriate access controls before handling real candidate information.
+- 🧪 Use fictional candidate data during development and testing.
+- ⚠️ This demo does not claim production-grade security or compliance.
 
 ## 🎯 Learning Objectives
 
-This project demonstrates practical learning in:
+This project supports practical learning in:
 
-- AWS cloud infrastructure
-- Linux and Docker container management
-- Python web application development
-- CI/CD with GitHub Actions
-- Docker image publishing
-- AWS Systems Manager remote access
-- Database integration and application testing
+- 🐍 Python web application development.
+- 🗄️ SQLite database integration.
+- 🌐 Frontend and backend integration.
+- 🐳 Docker containerization fundamentals.
+- ☁️ AWS cloud deployment concepts.
+- 🔄 Git and GitHub workflows.
+- 🤖 Rule-based skill matching and result explanation.
+- 🧪 Application testing and troubleshooting.
 
 ## 👩‍💻 Author
 
 **Mayuri Ambare**
 
-- GitHub: [@mayuriii-13](https://github.com/mayuriii-13)
-- Project Repository: [TalentFlow AI](https://github.com/mayuriii-13/talentflow-ai)
+- 🐙 GitHub: [@mayuriii-13](https://github.com/mayuriii-13)
+- 📂 Project Repository: [TalentFlow AI](https://github.com/mayuriii-13/talentflow-ai)
+
+## 🙌 Attribution
+
+This repository contains my own implementation and modifications, together with selected starting materials adapted from the Davine Technologies project materials provided during my internship.
+
+This README describes the modified version of the project and does not claim that every feature from the original materials or proposed architecture has been implemented or deployed.
 
 ---
 
 ⭐ If you find this project useful, feel free to explore the repository!
+
